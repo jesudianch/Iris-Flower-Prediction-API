@@ -148,3 +148,4 @@ pytest
 
 - If you use Python 3.12+, you must install `setuptools` to provide `distutils` for joblib compatibility.
 - The UI and API are served from the same FastAPI server for simplicity.
+- ------------
