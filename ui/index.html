@@ -3,97 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sepal Length Predictor V2</title>
+    <title>Iris Flower Prediction</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌸%3C/text%3E%3C/svg%3E">
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --text-color: #2c3e50;
+            --background-color: #f8f9fa;
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 50px;
-            background-color: #f4f4f9;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
+
         .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             text-align: center;
+            max-width: 500px;
+            width: 100%;
+            transition: transform 0.3s ease;
         }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
         h1 {
-            color: #333;
-            margin-bottom: 20px;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
         }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
         label {
+            display: block;
             font-size: 1.1em;
-            margin-right: 10px;
-            color: #555;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            text-align: left;
         }
+
         input[type="number"] {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-size: 1em;
-            width: 100px;
-            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
         }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        input[type="number"].error {
+            border-color: var(--error-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 1em;
-            color: #fff;
-            background-color: #007bff;
+            color: white;
+            background-color: var(--primary-color);
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            min-width: 120px;
         }
+
         button:hover {
-            background-color: #0056b3;
+            background-color: #357abd;
+            transform: translateY(-2px);
         }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+
         #predictionResult {
-            margin-top: 20px;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
             font-size: 1.2em;
-            color: #333;
-            min-height: 30px; /* To prevent layout shift */
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
+
         .error {
-            color: red;
+            background-color: #fde8e8;
+            color: var(--error-color);
+        }
+
+        .success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .validation-message {
+            color: var(--error-color);
+            font-size: 0.9em;
+            margin-top: 0.5rem;
+            text-align: left;
+            display: none;
+        }
+
+        .validation-message.show {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Iris Flower Prediction V1</h1>
-        <div>
-            <label for="sepalLength">Sepal Length (cm):</label>
-            <input type="number" id="sepalLength" name="sepalLength" step="0.1" placeholder="e.g., 5.1" required>
+        <h1>Iris Flower Prediction</h1>
+        <div class="input-group">
+            <label for="sepalLength">Sepal Length (cm)</label>
+            <input type="number" id="sepalLength" name="sepalLength" step="0.1" placeholder="Enter sepal length (e.g., 5.1)" required>
+            <div class="validation-message" id="validationMessage"></div>
         </div>
-        <button onclick="predictSepalLength()">Predict</button>
+        <div class="button-group">
+            <button onclick="predictSepalLength()" id="predictButton">Predict</button>
+            <button onclick="resetForm()" class="secondary">Reset</button>
+        </div>
         <div id="predictionResult"></div>
     </div>
 
     <script>
+        const sepalLengthInput = document.getElementById('sepalLength');
+        const predictionResultDiv = document.getElementById('predictionResult');
+        const predictButton = document.getElementById('predictButton');
+        const validationMessage = document.getElementById('validationMessage');
+
+        function validateInput(value) {
+            if (isNaN(value) || value <= 0) {
+                validationMessage.textContent = 'Please enter a valid positive number';
+                validationMessage.classList.add('show');
+                sepalLengthInput.classList.add('error');
+                return false;
+            }
+            validationMessage.classList.remove('show');
+            sepalLengthInput.classList.remove('error');
+            return true;
+        }
+
+        function resetForm() {
+            sepalLengthInput.value = '';
+            predictionResultDiv.textContent = '';
+            predictionResultDiv.className = '';
+            validationMessage.classList.remove('show');
+            sepalLengthInput.classList.remove('error');
+        }
+
         async function predictSepalLength() {
-            const sepalLengthInput = document.getElementById('sepalLength');
-            const predictionResultDiv = document.getElementById('predictionResult');
-            predictionResultDiv.textContent = ''; // Clear previous results
-            predictionResultDiv.classList.remove('error');
-
             const sepalLength = parseFloat(sepalLengthInput.value);
-
-            if (isNaN(sepalLength) || sepalLength <= 0) {
-                predictionResultDiv.textContent = 'Please enter a valid positive number for sepal length.';
-                predictionResultDiv.classList.add('error');
+            
+            if (!validateInput(sepalLength)) {
                 return;
             }
 
-            // This data structure matches your FastAPI Iris model
+            // Show loading state
+            predictButton.disabled = true;
+            predictionResultDiv.innerHTML = '<div class="loading"></div> Predicting...';
+            predictionResultDiv.className = '';
+
             const data = {
                 sepal_length: sepalLength
             };
 
             try {
-                // Make sure your FastAPI server is running on http://localhost:8000, below is changed so that it can be run in single docker container
                 const response = await fetch('/predict', {
                     method: 'POST',
                     headers: {
@@ -103,13 +231,13 @@
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ detail: 'Unknown server error or non-JSON error response' }));
-                    // FastAPI validation errors (422) often have a 'detail' field.
-                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    const errorData = await response.json().catch(() => ({ detail: 'Unknown server error' }));
+                    let errorMessage = `Error: ${response.status}`;
+                    
                     if (errorData && errorData.detail) {
-                        if (Array.isArray(errorData.detail)) { // Standard FastAPI validation error
-                           errorMessage += errorData.detail.map(err => ` ${err.loc[1]}: ${err.msg}`).join(';');
-                        } else { // Other error messages in detail (e.g. string)
+                        if (Array.isArray(errorData.detail)) {
+                            errorMessage += errorData.detail.map(err => ` ${err.loc[1]}: ${err.msg}`).join(';');
+                        } else {
                             errorMessage += `: ${errorData.detail}`;
                         }
                     } else if (response.statusText) {
@@ -120,21 +248,26 @@
 
                 const result = await response.json();
 
-                // This checks for the "prediction" key in the response from your FastAPI
                 if (result && result.prediction !== undefined) {
-                     predictionResultDiv.textContent = 'Prediction: ' + result.prediction;
+                    predictionResultDiv.textContent = `Predicted Sepal Length: ${result.prediction.toFixed(2)} cm`;
+                    predictionResultDiv.className = 'success';
                 } else {
-                    console.log('Unexpected response format:', result);
-                    predictionResultDiv.textContent = 'Received an unexpected response format from the server.';
-                    predictionResultDiv.classList.add('error');
+                    throw new Error('Unexpected response format from server');
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                predictionResultDiv.textContent = 'Error: ' + error.message;
-                predictionResultDiv.classList.add('error');
+                predictionResultDiv.textContent = error.message;
+                predictionResultDiv.className = 'error';
+            } finally {
+                predictButton.disabled = false;
             }
         }
+
+        // Add input validation on change
+        sepalLengthInput.addEventListener('input', function() {
+            validateInput(parseFloat(this.value));
+        });
     </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 ---
-title: Demo project of MLOps Mid Program
+title: Iris Flower Prediction API
 emoji: 🚀
 colorFrom: indigo
 colorTo: blue
