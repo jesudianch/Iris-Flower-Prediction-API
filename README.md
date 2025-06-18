@@ -25,7 +25,7 @@ This project is a demo MLOps application that serves a machine learning model fo
 ## Project Structure
 
 ```
-mid-program-project-main/
+Iris Flower Prediction/
 │
 ├── main.py              # FastAPI app serving the model and UI
 ├── train.py             # Script to train and save the model
