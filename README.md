@@ -13,6 +13,9 @@ pinned: false
 
 This project is a demo MLOps application that serves a machine learning model for predicting the species of an iris flower based on its sepal length. The backend is built with FastAPI, and the model is trained using scikit-learn. A simple web UI is provided for user interaction.
 
+### Access the application here
+[https://huggingface.co/spaces/Jesudian/IrisFlowerPrediction]
+
 ## Features
 
 - **Machine Learning Model**: Logistic Regression trained on the Iris dataset (using only sepal length as a feature).
