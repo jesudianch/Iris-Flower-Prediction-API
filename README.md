@@ -49,7 +49,7 @@ Iris Flower Prediction/
 
 ```sh
 git clone <repo-url>
-cd mid-program-project-main
+cd Iris Flower Prediction 
 ```
 
 ### 2. (Recommended) Create and Activate a Virtual Environment
