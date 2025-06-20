@@ -69,6 +69,15 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/iris-prediction-api:${{ env.GIT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      
+      - name: Slack Notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo, message, author, job, ref
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}   
 
   deploy:
     runs-on: ubuntu-latest
